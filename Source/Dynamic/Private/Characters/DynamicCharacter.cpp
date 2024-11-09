@@ -38,7 +38,7 @@ void ADynamicCharacter::BeginPlay()
 	{
 		if(UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))	
 		{
-			Subsystem->AddMappingContext(DynamicInputMappingContext,0);
+			Subsystem->AddMappingContext(DynamicInputMappingContext,1);
 		}
 	}
 	
@@ -46,13 +46,15 @@ void ADynamicCharacter::BeginPlay()
 
 void ADynamicCharacter::Move(const FInputActionValue& Value)
 {
-	FVector2d MovementVector = Value.Get<FVector2d>();
-	FRotator Rotation = Controller->GetControlRotation();
-	FRotator YawRotation = FRotator(0.0f,Rotation.Yaw,0.0f);
+	const FVector2d MovementVector = Value.Get<FVector2D>();
 
-	FVector ForwardDirection  = FRotationMatrix(Rotation).GetUnitAxis(EAxis::X);
+	FRotator Rotation = Controller->GetControlRotation();
+	
+	FRotator YawRotation = FRotator(0.0f,Rotation.Yaw,0.0f);
+	
+	const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
 	AddMovementInput(ForwardDirection,MovementVector.Y);
-	FVector RightDirection  = FRotationMatrix(Rotation).GetUnitAxis(EAxis::Y);
+	const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
 	AddMovementInput(RightDirection,MovementVector.X);
 }
 
