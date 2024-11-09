@@ -8,7 +8,7 @@
 #include  "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/SpringArmComponent.h"
-
+#include "Weapons/Weapon.h"
 
 
 ADynamicCharacter::ADynamicCharacter()
@@ -71,6 +71,17 @@ void ADynamicCharacter::Jump()
 	ACharacter::Jump();
 }
 
+void ADynamicCharacter::PickUp()
+{
+	if(AWeapon *OverlappingWeapon = Cast<AWeapon>(OverlappingItem))
+	{
+		OverlappingWeapon->Equip(GetMesh(),"WeaponSocket");
+		CharacterState = ECharacterState::ECS_equipped_OneHandedWeapon;
+		OverlappingItem = nullptr;
+		OverlappingWeapon->SetActorEnableCollision(false);
+	}
+}
+
 
 void ADynamicCharacter::Tick(float DeltaTime)
 {
@@ -88,6 +99,7 @@ void ADynamicCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(IA_Move,ETriggerEvent::Triggered,this,&ADynamicCharacter::Move);
 		EnhancedInputComponent->BindAction(IA_Look,ETriggerEvent::Triggered,this,&ADynamicCharacter::Look);
 		EnhancedInputComponent->BindAction(IA_Jump,ETriggerEvent::Started,this,&ADynamicCharacter::Jump);
+		EnhancedInputComponent->BindAction(IA_PickUp,ETriggerEvent::Started,this,&ADynamicCharacter::PickUp);
 	}
 
 }

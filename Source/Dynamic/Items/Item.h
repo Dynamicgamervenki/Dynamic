@@ -19,7 +19,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
-	class UStaticMeshComponent* StaticMesh;
+	class UStaticMeshComponent* ItemMesh;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	class USphereComponent* Sphere;

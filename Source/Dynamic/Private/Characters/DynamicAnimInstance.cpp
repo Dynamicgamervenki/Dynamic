@@ -24,6 +24,7 @@ void UDynamicAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		GroundSpeed = DynamicCharacter->GetVelocity().Size2D();
 		IsFalling = MovementComponent->IsFalling();
+		DynamicCharacter->GetCharacterState();
 	}
 	
 }

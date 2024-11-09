@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Characters/CharacterType.h"
+#include "Dynamic/Items/Item.h"
 #include "GameFramework/Character.h"
 #include "DynamicCharacter.generated.h"
 
@@ -18,6 +20,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
 
+	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="CharacterState")
+	ECharacterState CharacterState = ECharacterState::ECS_unequipped;
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Input")
@@ -31,7 +35,7 @@ protected:
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category="Input")
 	UInputAction* IA_Jump;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category="Input")
-	UInputAction* IA_Equip;
+	UInputAction* IA_PickUp;
 
 	//Function CallBacks
 	UFUNCTION()
@@ -39,6 +43,8 @@ protected:
 	UFUNCTION()
 	void Look(const FInputActionValue& Value);
 	void Jump();
+	void PickUp();
+	
 	
 private :
 
@@ -47,6 +53,11 @@ private :
 	
 	UPROPERTY(VisibleAnywhere)
 	class USpringArmComponent* CameraBoom;
+	
+	public:
 
-
+	UPROPERTY(VisibleAnywhere,Category = "Overlap")
+	AItem* OverlappingItem;
+	FORCEINLINE void SetOverlappingItem(AItem* item) { this->OverlappingItem = item;}
+	FORCEINLINE ECharacterState GetCharacterState() { return CharacterState; }
 };
