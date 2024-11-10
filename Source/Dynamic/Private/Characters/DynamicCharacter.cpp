@@ -101,6 +101,15 @@ void ADynamicCharacter::PickUp()
 
 }
 
+void ADynamicCharacter::Attack()
+{
+		if(CanAttack())
+		{
+			PlayAttackMontage();
+			ActionState = EActionState::EAS_Attacking;
+		}
+}
+
 bool ADynamicCharacter::CanArm()
 {
 	return (ActionState == EActionState::EAS_unocuupied && CharacterState == ECharacterState::ECS_unequipped && EquippedWeapon);
@@ -112,6 +121,16 @@ bool ADynamicCharacter::CanDisArm()
 	return (ActionState == EActionState::EAS_unocuupied  && CharacterState != ECharacterState::ECS_unequipped);
 }
 
+bool ADynamicCharacter::CanAttack()
+{
+	return CharacterState != ECharacterState::ECS_unequipped && ActionState == EActionState::EAS_unocuupied;
+}
+
+void ADynamicCharacter::AttackEnd()
+{
+	ActionState = EActionState::EAS_unocuupied;
+}
+
 void ADynamicCharacter::PlayArmWeaponMontage(FName SectionName)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
@@ -119,8 +138,36 @@ void ADynamicCharacter::PlayArmWeaponMontage(FName SectionName)
 	{
 		AnimInstance->Montage_Play(ArmWeaponMontage);
 		AnimInstance->Montage_JumpToSection(SectionName,ArmWeaponMontage);
-		
 	}
+}
+
+void ADynamicCharacter::PlayAttackMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if(AnimInstance && AttackMontage)
+	{
+		AnimInstance->Montage_Play(AttackMontage);
+		int32 Selection = FMath::RandRange(0,2);
+		FName SectionName = FName();
+		
+		switch (Selection)
+		{
+		case 0:
+			SectionName = FName("Attack01");
+			break;
+		case 1:
+			SectionName = FName("Attack02");
+			break;
+		case 2 :
+			SectionName = FName("Attack03");
+			break;
+		default:
+			break;
+		}
+		AnimInstance->Montage_JumpToSection(SectionName,AttackMontage);
+	}
+
 }
 
 void ADynamicCharacter::DisArm()
@@ -162,6 +209,7 @@ void ADynamicCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 		EnhancedInputComponent->BindAction(IA_Look,ETriggerEvent::Triggered,this,&ADynamicCharacter::Look);
 		EnhancedInputComponent->BindAction(IA_Jump,ETriggerEvent::Started,this,&ADynamicCharacter::Jump);
 		EnhancedInputComponent->BindAction(IA_PickUp,ETriggerEvent::Started,this,&ADynamicCharacter::PickUp);
+		EnhancedInputComponent->BindAction(IA_Attack,ETriggerEvent::Started,this,&ADynamicCharacter::Attack);
 	}
 
 }

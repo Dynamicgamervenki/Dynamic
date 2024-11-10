@@ -39,6 +39,8 @@ protected:
 	UInputAction* IA_Jump;
 	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category="Input")
 	UInputAction* IA_PickUp;
+	UPROPERTY(EditAnywhere,BlueprintReadOnly, Category="Input")
+	UInputAction* IA_Attack;
 
 	//Function CallBacks
 	UFUNCTION()
@@ -47,23 +49,30 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void Jump();
 	void PickUp();
+	void Attack();
 
 	bool CanArm();
 	bool CanDisArm();
+	bool CanAttack();
 
+
+	//Montage functions
 	void PlayArmWeaponMontage(FName SectionName);
+	void PlayAttackMontage();
 
-	UPROPERTY(VisibleAnywhere,Category="Weapon")
-	class AWeapon* EquippedWeapon;
 
+	//Anim-Notify Blueprint functions
 	UFUNCTION(BlueprintCallable)
 	void DisArm();
 	UFUNCTION(BlueprintCallable)
 	void Arm();
-
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
 	
+	UPROPERTY(VisibleAnywhere,Category="Weapon")
+	class AWeapon* EquippedWeapon;
 	
 private :
 	
@@ -85,4 +94,8 @@ private :
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation Montage")
 	class UAnimMontage* ArmWeaponMontage;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation Montage")
+	UAnimMontage* AttackMontage;
+	
 };
