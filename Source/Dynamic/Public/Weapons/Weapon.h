@@ -17,7 +17,11 @@ class DYNAMIC_API AWeapon : public AItem
 	virtual void OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
 	virtual void OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;
 
+
 public :
 	void Equip(USceneComponent *Parent ,FName InSocketName);
+
+	UFUNCTION(BlueprintCallable)
+	void AttachMeshToSocket(USceneComponent* Parent, FName InSocketName);
 	
 };

@@ -28,6 +28,7 @@ ADynamicCharacter::ADynamicCharacter()
 	
 	CameraView = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComponent"));
 	CameraView->SetupAttachment(CameraBoom);
+	
 }
 
 
@@ -46,6 +47,7 @@ void ADynamicCharacter::BeginPlay()
 
 void ADynamicCharacter::Move(const FInputActionValue& Value)
 {
+	if(ActionState != EActionState::EAS_unocuupied) return;
 	const FVector2d MovementVector = Value.Get<FVector2D>();
 
 	FRotator Rotation = Controller->GetControlRotation();
@@ -78,8 +80,68 @@ void ADynamicCharacter::PickUp()
 		OverlappingWeapon->Equip(GetMesh(),"WeaponSocket");
 		CharacterState = ECharacterState::ECS_equipped_OneHandedWeapon;
 		OverlappingItem = nullptr;
+		EquippedWeapon = OverlappingWeapon;
 		OverlappingWeapon->SetActorEnableCollision(false);
 	}
+	else
+	{
+		if(CanDisArm())
+		{
+			PlayArmWeaponMontage("Unequip");
+			CharacterState = ECharacterState::ECS_unequipped;
+			ActionState = EActionState::EAS_HandlingWeapon;
+		}
+		else if(CanArm())
+		{
+			PlayArmWeaponMontage("Equip");
+			CharacterState = ECharacterState::ECS_equipped_OneHandedWeapon;
+			ActionState = EActionState::EAS_HandlingWeapon;
+		}
+	}
+
+}
+
+bool ADynamicCharacter::CanArm()
+{
+	return (ActionState == EActionState::EAS_unocuupied && CharacterState == ECharacterState::ECS_unequipped && EquippedWeapon);
+
+}
+
+bool ADynamicCharacter::CanDisArm()
+{
+	return (ActionState == EActionState::EAS_unocuupied  && CharacterState != ECharacterState::ECS_unequipped);
+}
+
+void ADynamicCharacter::PlayArmWeaponMontage(FName SectionName)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	if(AnimInstance)
+	{
+		AnimInstance->Montage_Play(ArmWeaponMontage);
+		AnimInstance->Montage_JumpToSection(SectionName,ArmWeaponMontage);
+		
+	}
+}
+
+void ADynamicCharacter::DisArm()
+{
+	if(EquippedWeapon)
+	{
+		EquippedWeapon->AttachMeshToSocket(GetMesh(),"WeaponEquipSocket");
+	}
+}
+
+void ADynamicCharacter::Arm()
+{
+	if(EquippedWeapon)
+	{
+		EquippedWeapon->AttachMeshToSocket(GetMesh(),"WeaponSocket");
+	}
+}
+
+void ADynamicCharacter::FinishEquipping()
+{
+	ActionState = EActionState::EAS_unocuupied;
 }
 
 

@@ -5,8 +5,10 @@
 #include "CoreMinimal.h"
 #include "Characters/CharacterType.h"
 #include "Dynamic/Items/Item.h"
-#include "GameFramework/Character.h"
+#include "GameFramework/Character.h"  
 #include "DynamicCharacter.generated.h"
+
+struct FInputActionValue;
 
 UCLASS()
 class DYNAMIC_API ADynamicCharacter : public ACharacter
@@ -19,11 +21,12 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 protected:
+	
+	virtual void BeginPlay() override;
 
 	UPROPERTY(EditAnywhere,BlueprintReadOnly,Category="CharacterState")
 	ECharacterState CharacterState = ECharacterState::ECS_unequipped;
-	virtual void BeginPlay() override;
-
+	
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Input")
 	class UInputMappingContext* DynamicInputMappingContext;
 
@@ -44,9 +47,28 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void Jump();
 	void PickUp();
+
+	bool CanArm();
+	bool CanDisArm();
+
+	void PlayArmWeaponMontage(FName SectionName);
+
+	UPROPERTY(VisibleAnywhere,Category="Weapon")
+	class AWeapon* EquippedWeapon;
+
+	UFUNCTION(BlueprintCallable)
+	void DisArm();
+	UFUNCTION(BlueprintCallable)
+	void Arm();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
 	
 	
 private :
+	
+	UPROPERTY(BlueprintReadOnly, meta = (AllowPrivateAccess=true))
+	EActionState ActionState = EActionState::EAS_unocuupied;
 
 	UPROPERTY(VisibleAnywhere)
 	class UCameraComponent *CameraView;
@@ -60,4 +82,7 @@ private :
 	AItem* OverlappingItem;
 	FORCEINLINE void SetOverlappingItem(AItem* item) { this->OverlappingItem = item;}
 	FORCEINLINE ECharacterState GetCharacterState() { return CharacterState; }
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation Montage")
+	class UAnimMontage* ArmWeaponMontage;
 };
