@@ -97,5 +97,8 @@ private :
 
 	UPROPERTY(EditAnywhere,BlueprintReadWrite,Category="Animation Montage")
 	UAnimMontage* AttackMontage;
+
 	
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 };

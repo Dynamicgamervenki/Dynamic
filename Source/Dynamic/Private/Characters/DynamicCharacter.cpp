@@ -7,6 +7,7 @@
 #include "EnhancedInputComponent.h"
 #include  "EnhancedInputSubsystems.h"
 #include "Camera/CameraComponent.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Weapons/Weapon.h"
 
@@ -81,7 +82,6 @@ void ADynamicCharacter::PickUp()
 		CharacterState = ECharacterState::ECS_equipped_OneHandedWeapon;
 		OverlappingItem = nullptr;
 		EquippedWeapon = OverlappingWeapon;
-		OverlappingWeapon->SetActorEnableCollision(false);
 	}
 	else
 	{
@@ -189,6 +189,14 @@ void ADynamicCharacter::Arm()
 void ADynamicCharacter::FinishEquipping()
 {
 	ActionState = EActionState::EAS_unocuupied;
+}
+
+void ADynamicCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
+{
+	if(EquippedWeapon && EquippedWeapon->GetWeaponBox())
+	{
+		 EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
+	}
 }
 
 
