@@ -37,6 +37,8 @@ public :
 	UPROPERTY(VisibleAnywhere,BlueprintReadOnly)
 	USceneComponent* BoxTraceEnd;
 
+	TArray<AActor*>IgnoreActors;
+
 	FORCEINLINE UBoxComponent* GetWeaponBox() const {return WeaponBox;}
 	
 };

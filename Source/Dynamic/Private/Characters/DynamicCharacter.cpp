@@ -196,6 +196,7 @@ void ADynamicCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type Collis
 	if(EquippedWeapon && EquippedWeapon->GetWeaponBox())
 	{
 		 EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
+		EquippedWeapon->IgnoreActors.Empty();
 	}
 }
 
