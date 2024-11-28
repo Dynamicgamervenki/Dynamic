@@ -3,6 +3,7 @@
 
 #include "Enemies/Enemy.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 
@@ -44,9 +45,18 @@ void AEnemy::PlayHitReactMontage(const FName& SectionName)
 }
 
 
-void AEnemy::GetHit(FVector ImpactPoint)
+void AEnemy::GetHit_Implementation(FVector ImpactPoint)
 {
 	DirectionalHitReact(ImpactPoint);
+
+	if (HitParticles)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(
+			GetWorld(),
+			HitParticles,
+			ImpactPoint
+			);
+	}
 }
 
 void AEnemy::DirectionalHitReact(FVector ImpactPoint)
@@ -83,11 +93,11 @@ void AEnemy::DirectionalHitReact(FVector ImpactPoint)
 
 	PlayHitReactMontage(Section);
 	
-	GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Angle: %f"), Theta));
-	
-	UKismetSystemLibrary::DrawDebugArrow(GetWorld(), GetActorLocation(), GetActorLocation() + Forward * 60.0f, 5.0f, FLinearColor::Red, 5.0f, 1.0f);
-	UKismetSystemLibrary::DrawDebugArrow(GetWorld(), GetActorLocation(), GetActorLocation() + ToHit * 60.0f, 5.0f, FLinearColor::Green, 5.0f, 1.0f);
-	UKismetSystemLibrary::DrawDebugArrow(GetWorld(), GetActorLocation(), GetActorLocation() + CrossProduct * 100.0f, 5.0f, FLinearColor::Blue, 5.0f, 1.0f);
+	// GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, FString::Printf(TEXT("Angle: %f"), Theta));
+	//
+	// UKismetSystemLibrary::DrawDebugArrow(GetWorld(), GetActorLocation(), GetActorLocation() + Forward * 60.0f, 5.0f, FLinearColor::Red, 5.0f, 1.0f);
+	// UKismetSystemLibrary::DrawDebugArrow(GetWorld(), GetActorLocation(), GetActorLocation() + ToHit * 60.0f, 5.0f, FLinearColor::Green, 5.0f, 1.0f);
+	// UKismetSystemLibrary::DrawDebugArrow(GetWorld(), GetActorLocation(), GetActorLocation() + CrossProduct * 100.0f, 5.0f, FLinearColor::Blue, 5.0f, 1.0f);
 }
 
 

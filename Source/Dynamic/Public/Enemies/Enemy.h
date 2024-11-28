@@ -27,10 +27,13 @@ protected:
 	void DirectionalHitReact(FVector ImpactPoint);
 
 private:
-	virtual void GetHit(FVector ImpactPoint) override;
+	virtual void GetHit_Implementation(FVector ImpactPoint) override;
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	UAnimMontage* HitReactMontage;
+	
+	UPROPERTY(EditAnywhere, Category = VisualEffects)
+	UParticleSystem* HitParticles;
 
 	
 

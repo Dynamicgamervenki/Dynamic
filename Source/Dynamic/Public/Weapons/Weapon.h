@@ -26,6 +26,9 @@ class DYNAMIC_API AWeapon : public AItem
 	UPROPERTY(EditAnywhere,BlueprintReadOnly)
 	class UBoxComponent* WeaponBox;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateField(const FVector& FieldLocation);
+
 public :
 	void Equip(USceneComponent *Parent ,FName InSocketName);
 
