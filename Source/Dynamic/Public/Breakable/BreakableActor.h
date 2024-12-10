@@ -22,4 +22,10 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	class UGeometryCollectionComponent* GeometryCollection;
 
+	UPROPERTY(EditDefaultsOnly,Category = BreakableActors)
+	TArray<TSubclassOf<class ATressure>> TressureClasses;
+
+	UPROPERTY(BlueprintReadWrite,VisibleAnywhere);
+	class UCapsuleComponent* Capsule;
+
 };
